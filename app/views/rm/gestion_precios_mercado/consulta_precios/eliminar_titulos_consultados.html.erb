@@ -1,0 +1,23 @@
+<% content_for( :titulo ){'Carga masiva de precio mercado'} %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><strong>Resultados de la eliminación</strong></div>
+      <div class="panel-body">
+        <br>
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="alert alert-info text-center">
+              <p style="font-size: 1.2em"><i class="fa fa-trash"></i> - La eliminación se efectuó satisfactoriamente de la tabla de PRECIOS MERCADO</p>
+            </div>            
+          </div>
+        </div>
+        <div class="text-center">
+          <%= link_to new_gestion_precios_mercado_consulta_precios_path, class: 'btn btn-warning' do %>
+          <i class="fa fa-search"></i> Consultar precios mercado
+          <% end %>  
+        </div>        
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,22 @@
+submenu_1:
+  nodo: '250 | Riesgo de Mercado | shopping-cart | /opciones/250 '
+  submenu_1_1:
+    nodo: '251 | Análisis del portafolio | bar-chart | /rm/rm_analisis_portafolio/new '
+  submenu_1_2:
+    nodo: '252 | Simulación de Montecarlo | refresh | /rm/rm_simulacion_montecarlo/new '
+  submenu_1_3:
+    nodo: '253 | Duration | refresh | /opciones/253 '
+    submenu_1_3_1:
+      nodo: '254 | Parámetros Duration | cog | /rm/rm_parametros_duration/lista '
+    submenu_1_3_2:
+      nodo: '255 | Cálculo Duration | percent | /rm/rm_duration/new '
+  submenu_1_4:
+    nodo: '257 | Cálculo C-Var | bar-chart | /rm/rm_cvar/new '
+  submenu_1_5:
+    nodo: '260 | Asignar historia a títulos de mercado | calendar | /rm/rm_antecedentes_titulos/new '
+  submenu_1_6:
+    nodo: '261 | Gestión de precios mercado | cart-plus | /opciones/261 '
+    submenu_1_6_1:
+      nodo: '262 | Consulta de precios mercado | search | /rm/gestion_precios_mercado/consulta_precios/new '
+    submenu_1_6_2:
+      nodo: '263 | Carga masiva de precios mercado | upload | /rm/gestion_precios_mercado/carga_masiva/new '

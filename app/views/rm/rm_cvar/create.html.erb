@@ -1,0 +1,75 @@
+<% content_for( :titulo ){'Resultados del cálculo C-VaR'} %>
+<%= render 'form' %>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <% if  @rm_cvar.rm_inversion_codigo.blank? %>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <%= render partial: 'titulos_en_cartera_que_no_existen_en_precios_mercado', locals: {titulos_en_cartera_que_no_existen_en_precios_mercado: @rm_cvar.titulos_en_cartera_que_no_existen_en_precios_mercado} %>        
+      </div>
+    </div>
+    <% end %>
+    <%= callout("Resultados C-VaR", :danger) %>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th style="text-center">INSTRUMENTO</th>
+                <th style="text-center">FECHA DE ESTUDIO</th>
+                <th style="text-center">INTERVALO DE CONFIANZA</th>
+                <th style="text-center">POSICION</th>
+                <th style="text-center">VOLATILIDAD</th>
+                <th style="text-center">VAR</th>
+              </tr>
+            </thead>
+            <tbody class="centrado">
+              <tr>
+                <td><strong><%= @rm_cvar.instrumento %></strong></td>
+                <td><%= @rm_cvar.fecha_de_estudio.to_date.strftime("%d / %m / %Y")%></td>
+                <td><%= @rm_cvar.intervalo_de_confianza %> %</td>
+                <td><%= number_with_precision( @rm_cvar.posicion, delimiter: ".", separator: ",", precision: 6) %></td>
+                <td><%= number_with_precision( @rm_cvar.volatilidad, delimiter: ".", separator: ",", precision: 6) %></td>
+                <td><%= number_with_precision( @rm_cvar.var, delimiter: ".", separator: ",", precision: 6) %></td>                  
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <h1 class="text-center">C-VaR</h1>
+    <h2 class="text-center"><span class="label label-warning" style="border: 1px solid black"><%= number_with_precision( @rm_cvar.cvar, delimiter: '.', separator: ',', precision: 4)  %></span></h2>
+    <%= callout("Serie C-VaR", :danger) %>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th>INCREMENTOS PORCENTUALES</th>
+                <th>RELACION INVERSA</th>
+                <th>PESOS NORMALIZADOS</th>
+                <th>FACTORES</th>
+                <th>POSICION * DEVSTD * FACTOR</th>
+                <th>SERIE CVAR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @rm_cvar.serie_cvar.each do |s| %>
+              <tr>
+                <td class="text-right"><%= number_with_precision(s[:vector_incremento_porcentajes] * 100.0 , :delimiter => ".", :separator => ",", :precision => 4)%> %</td>
+                <td class="text-right"><%= number_with_precision(s[:vector_1_menos_incremento_porcentajes] * 100.0 , :delimiter => ".", :separator => ",", :precision => 4)%> %</td>
+                <td class="text-right"><%= number_with_precision(s[:vector_pesos_normalizados] * 100.0 , :delimiter => ".", :separator => ",", :precision => 4)%> %</td>
+                <td class="text-right"><%= number_with_precision(s[:vector_factores], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                <td class="text-right"><%= number_with_precision(s[:vector_posicion_x_devstd_x_factor] , :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                <td class="text-right"><%= number_with_precision(s[:vector_cvar] , :delimiter => ".", :separator => ",", :precision => 4)%></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

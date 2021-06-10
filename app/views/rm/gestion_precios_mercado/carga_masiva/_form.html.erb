@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><strong>Parámetros de carga</strong></div>
+      <div class="panel-body">
+        <%= simple_form_for(@carga_masiva) do |f| %>
+          <fieldset>
+            <legend>Subir archivo de carga para precios mercado</legend> 
+              <%= f.input :archivo, :label=>"Seleccione archivo plano",  :as => :file %>
+              <span>(*) El archivo <strong style="color: red">no debe</strong> contener una fecha superior a la máxima fecha de carga en RMID: <%= RmInversionDiaria.maximum(:fecha_snapshot).try(:strftime,"%d / %m / %Y") || '------' %></span>
+              <br>
+              <%= f.input :separador, :label=>"Seleccione el separador de columnas", hint: 'Sólo si el archivo es CSV', collection: Rm::GestionPreciosMercado::CargaMasiva::ArchivoPreciosMercado::SEPARADORES,  input_html: { style: ancho_input_px(50)}, include_blank: false  %>
+          </fieldset> 
+          <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
+            <i class="fa fa-save"></i> Cargar
+          <% end %>
+          <%= link_to :back, class: 'btn btn-warning' do %>
+            <i class="fa fa-arrow-left"></i> Volver
+          <% end %>
+        
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

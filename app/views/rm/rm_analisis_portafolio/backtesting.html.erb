@@ -1,0 +1,64 @@
+<% content_for( :titulo ){'Cálculo Backtesting Portafolio de Inversiones al Vencimiento'} %>
+<%= render 'form'  %>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <%= high_stock("grafico_posiciones",Rm::RmAnalisisPortafolio::GraficasBacktesting.lineas(@rm_analisis_portafolio.backtesting.serie, @rm_analisis_portafolio.backtesting.columna_calculo_para_encabezado_tabla, @rm_analisis_portafolio.backtesting.columna_calculo)) %>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <%= callout("Resultados del excepciones", :danger) %>
+    <div class="row">
+      <div class="col-md-12">
+        <table class="tabla table-condensed table-bordered table-data-calculos tablas_backtesting_volatilidades_depositos">
+          <thead>
+            <tr>
+              <th>Excepciones sobre lo estimado</th>
+              <th>Excepciones bajo lo estimado</th>
+              <th>Total de excepciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="excepcion_sobre_lo_estimado"><strong><%= @rm_analisis_portafolio.backtesting.excepciones_sobre_lo_estimado%></strong></td>
+              <td class="excepcion_bajo_lo_estimado"><strong><%= @rm_analisis_portafolio.backtesting.excepciones_bajo_lo_estimado%></strong></td>
+              <td><%=  @rm_analisis_portafolio.backtesting.excepciones_bajo_lo_estimado + @rm_analisis_portafolio.backtesting.excepciones_sobre_lo_estimado %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <%= callout("Serie Backtesting", :danger) %>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th class="text-center">MUESTRA</th>
+                <th class="text-center">FECHA SNAPSHOT</th>
+                <th class="text-center">VAR</th>
+                <th class="text-center">VAR -</th>
+                <th class="text-center"><%= @rm_analisis_portafolio.backtesting.columna_calculo_para_encabezado_tabla %></th>
+                <th class="text-center">VAR +</th>
+              </tr>
+            </thead>
+            <tbody class="centrado">
+              <% @rm_analisis_portafolio.backtesting.serie.each_with_index do |h,i| %>
+              <tr class="<%= resaltar_excepcion_backtesting(h, @rm_analisis_portafolio.backtesting.columna_calculo) %>">
+                <td><%= i+1  %></td>
+                <td><%= h["fecha_snapshot"].to_date.strftime("%d/%m/%Y") %></td>
+                <td><%= number_with_precision(h["var"],:delimiter => ".", :separator => ",", :precision => 6) %></td>
+                <td><%= number_with_precision(h["var-"],:delimiter => ".", :separator => ",", :precision => 6) %></td>
+                <td><%= number_with_precision(h[@rm_analisis_portafolio.backtesting.columna_calculo],:delimiter => ".", :separator => ",", :precision => 6) %> </td>
+                <td><%= number_with_precision(h["var+"],:delimiter => ".", :separator => ",", :precision => 6) %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

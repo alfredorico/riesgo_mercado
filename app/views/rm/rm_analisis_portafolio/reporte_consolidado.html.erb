@@ -1,0 +1,116 @@
+<% content_for( :titulo ){'Reporte Consolidado de Cartera de Inversiones'} %>
+<%= render 'form'  %>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <% if  @rm_analisis_portafolio.rm_inversion_codigo.blank? %>
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <%= render partial: 'titulos_en_cartera_que_no_existen_en_precios_mercado', locals: {titulos_en_cartera_que_no_existen_en_precios_mercado: @rm_analisis_portafolio.titulos_en_cartera_que_no_existen_en_precios_mercado} %>
+        </div>
+      </div>
+    <% end %>
+    <%= callout("Detalles del portafolio de inversion", :danger) %>
+    <%= high_chart("chart", Rm::RmAnalisisPortafolio::GraficasReporteConsolidado.lineas( @rm_analisis_portafolio.reporte_consolidado.titulos_en_cartera_a_la_fecha_de_estudio_que_existan_en_precios_mercado,
+                                                                                     @rm_analisis_portafolio.reporte_consolidado.listado_vares,
+                                                                                     "VaR de títulos de la cartera seleccionada al #{@rm_analisis_portafolio.reporte_consolidado.fecha_de_estudio.strftime('%d/%m/%Y')}",
+                                                                                     "VaR",
+                                                                                     "#4572A7"
+                                                                                    )) %>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-12">
+        <%= callout("Serie de precios mercado y variaciones",:info) %>
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead class="centrado">
+              <tr>
+                <th>CODIGO</th>
+                <th>VALOR NOMINAL</th>
+                <th>POSICION</th>
+                <th>PRECIO MERCADO</th>
+                <th>VALOR ADQUISICION</th>
+                <th>VALOR SEGUN MERCADO</th>
+                <th>G/P NR</th>
+                <th>VOLATILIDAD</th>
+                <th>VAR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @rm_analisis_portafolio.reporte_consolidado.reporte_titulos.each do |item| %>
+              <tr>
+                <td><%=item["rm_inversion_codigo"] %></td>
+                <td class="text-right precio_mercado_<%= item["valor_nominal"].to_i %>"><%=number_with_precision(item["valor_nominal"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                <td class="text-right precio_mercado_<%= item["posicion"].to_i %>"><%=number_with_precision(item["posicion"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                <td class="text-right precio_mercado_<%= item["precio"].to_i %>"><%= precio_mercado_o_nulo(item["precio"]) %></td>
+                <td><%=number_with_precision(item["valor_adquisicion"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                <td class="text-right precio_mercado_<%= item["precio"].to_i %>"><%=number_with_precision(item["valor_segun_mercado"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                <td class="text-right precio_mercado_<%= item["precio"].to_i %>"><%=number_with_precision(item["gp_nr"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                <td class="text-right"><%= item["volatilidad"].to_f.round(6).nan? ? '----' : "#{(item["volatilidad"].to_f * 100.0).round(6)} %" %> </td>
+                <td class="text-right"><%=number_with_precision(item["var"].nan? ? '----' : "#{item["var"]}", :delimiter => ".", :separator => ",", :precision => 4)%></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-6">
+        <%= callout("Reporte consolidado del portafolio",:danger) %>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-data-calculos-transpuesta">
+            <tr>
+              <th class="col-md-4">VALOR NOMINAL</th><td class="col-md-8"><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["valor_nominal"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+            <tr>
+              <th>POSICION</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["posicion"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+            <tr>
+              <th>PRECIO MERCADO</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["precio_mercado"], :delimiter => ".", :separator => ",", :precision => 4)%> %</td>
+            </tr>
+            <th>VALOR ADQUISICION</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["valor_adquisicion"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            <tr>
+              <th>VALOR SEGUN MERCADO</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["valor_segun_mercado"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+            <tr>
+              <th>G/P NR</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["gp_nr"], :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+            <tr>
+              <th>VOLATILIDAD</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["volatilidad"].to_f.nan? ? '----' : "#{@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["volatilidad"] * 100.0} %", :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+            <tr>
+              <th>VAR</th><td><strong><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["var"].to_f.nan? ? '----' : @rm_analisis_portafolio.reporte_consolidado.reporte_portafolio["var"], :delimiter => ".", :separator => ",", :precision => 4)%></strong></td>
+            </tr>
+          </table>
+        </div>
+        <%= callout("Cálculos resumen adicionales",:danger) %>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-data-calculos-transpuesta">
+            <tr>
+              <th  class="col-md-4">SUMATORIA VaR INDIVIDUALES</th><td  class="col-md-8"><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.sumatoria_var_individuales, :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+            <tr>
+              <th>VaR CONSOLIDADO PORTAFOLIO</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.var_consolidado_de_portafolio, :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+            <tr>
+              <th>EFECTO DIVERSIFICACION</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.efecto_diversificacion, :delimiter => ".", :separator => ",", :precision => 4)%> %</td>
+            </tr>
+              <th>VaR 1 DIA DE GESTION</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.var_1_dia_de_gestion, :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            <tr>
+              <th>VaR 10 DIAS REGULATORIO</th><td><%=number_with_precision(@rm_analisis_portafolio.reporte_consolidado.var_10_dias_regulatorio, :delimiter => ".", :separator => ",", :precision => 4)%></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

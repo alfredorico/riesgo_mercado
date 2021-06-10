@@ -1,0 +1,61 @@
+<% content_for( :titulo ){'Resultados del histograma'} %>
+<%= render 'form'  %>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-12">
+        <%= callout("Histograma de precios mercado / #{@rm_simulacion_montecarlo.informacion_titulo} ",:danger) %>        
+      </div>
+    </div>
+    <div align="row">
+      <div class="col-md-8 col-md-offset-2"> 
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <%= high_chart('chart1',@rm_simulacion_montecarlo.histogramas.grafica_histograma_precios) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <%= callout("Histograma de rendimientos / #{@rm_simulacion_montecarlo.informacion_titulo} ",:danger) %>
+      </div>
+    </div>
+
+    <div align="row">
+      <div class="col-md-8 col-md-offset-2"> 
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <%= high_chart('chart2',@rm_simulacion_montecarlo.histogramas.grafica_histograma_precios_ln) %>
+          </div>
+        </div>
+      </div>
+    </div>   
+    
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">  
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th style="text-align: center">MUESTRA</th>
+                <th style="text-align: center">FECHA DE ESTUDIO</th>
+                <th style="text-align: center">PRECIO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @rm_simulacion_montecarlo.serie_fecha_y_precios_mercado.each_with_index do |s,i| %>
+                <tr>
+                  <td style="text-align: center"><%= i+1 %></td>
+                  <td style="text-align: center"><%= s['fecha_snapshot'].strftime("%d / %m / %Y") %></td>
+                  <td style="text-align: center"><%= s['precio_mercado'] %></td>              
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>    
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+var $select = $("#rm_analisis_portafolio_rm_inversion_codigo");
+$select.empty(); //Limpiar options
+$select.append("<option value>PORTAFOLIO</option>")
+$select.append("<%= j(options_for_select(@titulos)) %>");
+$('#titulos_spinner').hide();
+$("#rm_analisis_portafolio_rm_inversion_codigo").show();
+$('#boton_generar_analisis_portafolio').removeAttr('disabled');
+$('.boton_generar_excel').removeAttr('disabled');

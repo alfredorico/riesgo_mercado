@@ -1,0 +1,65 @@
+<style type="text/css">
+  div[id*="parametro_"]{
+    display: none;
+  }
+</style>
+<div class="row">
+  <div class="col-md-6">
+    <%= f.input :distribucion_estadistica, :label => 'Distribución Estadística', collection: Rm::RmSimulacionMontecarlo::NumerosAleatorios::DISTRIBUCIONES, :input_html => { id: 'rl_indicadores_liquidez_distribucion_estadistica'},  include_blank: 'Seleccione...' %>
+  </div>
+</div>   
+<!-- La distribución normal no requiere parámetros -->
+<div id="parametro_df">
+  <%= f.input :df, label: 'Grados de Libertad:',  input_html: { style: ancho_input_px(60)} %>
+</div>
+<div id="parametro_shape">
+  <%= f.input :shape, label: 'Shape:',  input_html: { style: ancho_input_px(60)} %>
+</div>
+<div id="parametro_mean">
+  <%= f.input :mean, label: 'Media:',  input_html: { style: ancho_input_px(60)} %>
+</div>
+<div id="parametro_stddev">
+  <%= f.input :stddev, label: 'Desviación Estandar:',  input_html: { style: ancho_input_px(60)} %>
+</div>
+<div id="parametro_scale">
+  <%= f.input :scale, label: 'Escala:',  input_html: { style: ancho_input_px(60)} %>
+</div>
+<div id="parametro_shape1">
+  <%= f.input :shape1, label: 'Alfa:',  input_html: { style: ancho_input_px(60)} %>
+</div>
+<div id="parametro_shape2">
+  <%= f.input :shape2, label: 'Beta:',  input_html: { style: ancho_input_px(60)} %>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+    // ['NORMAL','T-STUDENT','LOGISTICA','GAMMA','BETA'] <-- Rm::RmSimulacionMontecarlo::NumerosAleatorios::DISTRIBUCIONES 
+    $("#rl_indicadores_liquidez_distribucion_estadistica").change(function () {
+        $("div[id*='parametro_']").hide(); // Ocultar siempre a todos
+        if ($(this).val() == "1") // T-STUDENT
+        {
+          $("#parametro_df").fadeIn('slow');
+        }         
+        if ($(this).val() == "2") // 'LOGISTICA'
+        {
+            $("#parametro_mean").fadeIn('slow');
+            $("#parametro_scale").fadeIn('slow');
+        }
+        if ($(this).val() == "3" || $(this).val() == "6") // 'GAMMA' o WEIBULL
+        {
+            $("#parametro_scale").fadeIn('slow');
+            $("#parametro_shape").fadeIn('slow');            
+        }         
+        if ($(this).val() == "4") // 'BETA'
+        {
+            $("#parametro_shape1").fadeIn('slow');
+            $("#parametro_shape2").fadeIn('slow');
+        }
+        if ($(this).val() == "5") // 'LOGNORMAL'
+        {
+            //$("#rm_simulacion_montecarlo_mean").attr('value','');
+            $("#parametro_mean").fadeIn('slow');
+            $("#parametro_stddev").fadeIn('slow');
+        }     
+    }).change();
+});
+</script>

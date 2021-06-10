@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-condensed">
+      <thead>
+        <tr class="alert alert-success">
+          <th class="text-center">FECHA SNAPSHOT</th>
+          <th class="text-center">CODIGO DEL TITULO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr >
+          <td class="text-center" style="font-size: 1.2em; font-weight: bold"><%= @rm_precio_mercado.fecha_snapshot.strftime('%d/%m/%Y') %></td>
+          <td class="text-center" style="font-size: 1.2em; font-weight: bold"><%= @rm_precio_mercado.codigo_titulo %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

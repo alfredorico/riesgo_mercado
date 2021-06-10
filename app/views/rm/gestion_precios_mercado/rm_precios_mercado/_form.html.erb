@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><strong>Edición de precios mercado</strong></div>
+      <div class="panel-body">
+        <%= simple_form_for(@rm_precio_mercado, as: :rm_precio_mercado, url: url, method: method) do |f| %>
+          <% if @rm_precio_mercado.new_record? %>
+            <%= render 'para_titulo_nuevo', f: f %>
+          <% else %>
+            <%= render 'para_titulo_existente' %>          
+          <% end %>
+          <%= f.input :nombre,  label: 'Nombre del título:', as: :string, input_html: { style: ancho_input_px(130)} %>
+          <%= f.input :monto,  label: 'Monto:', as: :string, input_html: { style: ancho_input_px(130)} %>
+          <%= f.input :precio_compra,  label: 'Precio compra:', as: :string, input_html: { style: ancho_input_px(130)} %>
+          <div class="row">
+            <div class="col-md-6">
+              <%= campo_fecha(f, :fecha_vencimiento, 'Fecha de vencimiento:', '') %>              
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="alert alert-info rm_precio_mercado_input_precio_mercado">
+                <%= f.input :precio_mercado,  label: 'Precio mercado:', as: :string, input_html: { style: ancho_input_px(130)} %>            
+              </div>
+            </div>
+          </div>
+          <%= f.input :tasa_cupon,  label: 'Tasa cupón:', as: :string, input_html: { style: ancho_input_px(130)} %>
+          
+          <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
+            <i class="fa fa-save"></i> Guardar
+          <% end %>
+          <%= link_to :back, class: 'btn btn-warning' do %>
+            <i class="fa fa-arrow-left"></i> Volver
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

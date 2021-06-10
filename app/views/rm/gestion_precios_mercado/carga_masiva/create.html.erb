@@ -1,0 +1,28 @@
+<% content_for( :titulo ){'Carga masiva de precio mercado'} %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><strong>Resultados de la carga</strong></div>
+      <div class="panel-body">
+        <br>
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="alert alert-info text-center">
+              <p style="font-size: 1.2em">La carga del archivo <strong>"<%= @carga_masiva.ruta_archivo.split('/').last %>"</strong> fué efectuada satisfactoriamente en la tabla de PRECIOS MERCADO</p>
+            </div>            
+          </div>
+        </div>
+        <div class="text-center">
+          <%= link_to new_gestion_precios_mercado_carga_masiva_path, class: 'btn btn-info' do %>
+          <i class="fa fa-upload"></i> Nueva carga masiva
+          <% end %>  
+          <% if can? :new, Rm::GestionPreciosMercado::ConsultaPrecios  %>
+            <%= link_to new_gestion_precios_mercado_consulta_precios_path, class: 'btn btn-warning' do %>
+            <i class="fa fa-search"></i> Consultar precios mercado
+            <% end %>              
+          <% end %>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div> 

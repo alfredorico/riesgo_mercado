@@ -1,0 +1,164 @@
+<style media="screen">
+  .link_asignar_antecedente_titulo{
+    padding: 3px 10px !important;    
+  }
+</style>
+<% content_for( :titulo ){'Asignación de historia a títulos de mercado'} %>
+
+<% if @titulos_para_asignar_historia.any?  %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">      
+      <div class="panel-body">
+        <%= callout("Seleccione los títulos para asignar historia",:danger) %>
+        </p>Esta interfaz permite asignar un antecedente histórico a los titulos en los precios mercado que no tengan la suficiente cantidad de muestras para efectuar los cáclulos VaR</p>
+        <p><strong>Fecha de estudio:</strong> <%= Date.today.strftime("%d / %m / %Y") %></p>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-data-calculos">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>TIPO CARTERA</th>
+              <th>TITULOS  EN LA CARTERA DE INVERSIONES</th>
+              <th>NUMERO DE MUESTRAS</th>
+              <th>DÍA INICIAL EN EL HISTORICO DE PRECIOS MERCADO</th>
+              <th>ULITMA FECHA CARGADA</th>
+              <th colspan="3">TÍTULOS DEL MERCADO CANDIDATOS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @titulos_para_asignar_historia.each_with_index do |titulo,i|%>
+            <tr>
+              <td class="text-left"><%= i+1 %></td>
+              <td class="text-left"><%= titulo.cartera %></td>
+              <td class="text-left"><%= titulo.codigo_titulo %> - <%= RmPrecioMercado.where(codigo_titulo: titulo.codigo_titulo).order('fecha_snapshot desc').limit(1).first.nombre %></td>
+              <td class="text-center"><%= titulo.muestras%></td>
+              <td class="text-center"><%= titulo.minima_fecha_snapshot_titulo_original.strftime("%d / %m / %Y")%></td>
+              <td class="text-center"><%= titulo.max_fecha_snapshot.strftime("%d / %m / %Y")%></td>
+              <% if titulo.titulos_candidatos.present? %>
+              <%= simple_form_for(titulo) do |f|%>
+              <td style="border-right: 0" class="campos_asignar_historia_titulo">
+                <%= f.input :fecha_de_estudio_asignacion, :as =>:hidden %>
+                <%= f.input :minima_fecha_snapshot_titulo_original, :as =>:hidden %>
+                <%= f.input :codigo_titulo, :as =>:hidden %>
+                <%= f.input :tipo_cartera, :as =>:hidden %>
+                <%= f.input :codigo_titulo_asignado, :label=>false, :collection => titulo.titulos_candidatos, :input_html => {:id=>titulo.max_id}, :prompt => 'Seleccione título' %>
+              </td>
+              <td style="border-right: 0">
+                <%= link_to("VER HISTORIA", grafica_comportamiento_historico_rm_antecedente_titulo_path('---'),
+                :class=>'btn btn-success oculto',
+                :id =>"historia_#{titulo.max_id}",
+                :remote => true) %>
+              </td>
+              <td style="border-right: 0">
+                <% if can? :create, Rm::RmAntecedenteTitulo %>
+                  <%= button_tag(type: 'submit', class: "btn btn-danger oculto link_asignar_antecedente_titulo", id: "asignar_#{titulo.max_id}") do %>                    
+                  ASIGNAR TÍTULO
+                  <% end %>                
+                <% end %>
+              </td>
+              <% end %>
+              <% else %>
+              <td><span style="color: red">No hay títulos del mercado que sirvan de antecedente</span></td><td></td><td></td>
+              <% end %>
+            </tr>
+            <% end %>            
+          </tbody>
+          </table>
+          <% if can? :new, Rm::RmAnalisisPortafolio %>
+            <div class="text-center">
+              <%= link_to("Cálculo de Var de Títulos", new_rm_analisis_portafolio_path,:class=>'btn btn-primary espacio_superior_15') %>            
+            </div>  
+          <% end %>        
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>
+<% end %>
+<% if Rm::RmAntecedenteTitulo.any? %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">      
+      <div class="panel-body">
+        <%= callout("Títulos con antecedentes asignados",:danger) %>
+        <p>A continuación se listan los títulos adquiridos cuya hitoria fué tomada de los precios del mercado</p>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th>TIPO DE CARTERA</th>
+                <th>TITULO BASE EN PRECIOS MERCADO</th>
+                <th>TÍTULO DEL MERCADO ASIGNADO PARA COMPLETAR HISTORIA</th>
+                <th>FECHA DE ORIGINAL DE APARICION EN PRECIOS MERCADO</th>
+                <% if can? :destroy, Rm::RmAntecedenteTitulo %>                  
+                  <th>ÓPERACIÓN</th>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% Rm::RmAntecedenteTitulo.all.each do |titulo|%>
+              <tr>
+                <td class="text-center"><%= titulo.cartera %></td>
+                <td class="text-center"><%= titulo.codigo_titulo %> - <%= RmPrecioMercado.where(codigo_titulo: titulo.codigo_titulo).order('fecha_snapshot desc').limit(1).first.nombre %></td>
+                <td class="text-center"><%= titulo.codigo_titulo_asignado %> - <%= RmPrecioMercado.where(codigo_titulo: titulo.codigo_titulo_asignado).order('fecha_snapshot desc').limit(1).first.nombre %></td>
+                <td class="text-center"><%= titulo.minima_fecha_snapshot_titulo_original.strftime("%d / %m /%Y") %></td>
+                <% if can? :destroy, Rm::RmAntecedenteTitulo %>                  
+                  <td class="text-center">
+                    <%= link_to rm_antecedente_titulo_path(titulo.id), method: :delete, data: { confirm: 'Esta seguro que desea eliminar la asociación?' } do %>
+                    <i class="fa fa-trash danger" title="Eliminar asociación"></i>
+                    <% end %>
+                  </td>
+                <% end %>
+              </tr>
+              <% end %>                
+            </tbody>
+          </table>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="gridSystemModalLabel">Graficación de precios del título</h4>
+      </div>
+      <div class="modal-body">
+        <div id="grafico_comportamiento_titulo"></div>        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+  $('select').change(function() {
+    id = $(this).attr("id");
+    if($(this).val() != "")
+    {
+      titulo = $(this).val();
+      titulo = encodeURIComponent(titulo);
+      //Asignar el código del título al link
+      href = $('#historia_'+id).attr("href")
+      href = href.replace(/\/rm\/rm_antecedentes_titulos\/.+\/grafica_comportamiento_historico/, "/rm/rm_antecedentes_titulos/"+titulo+"/grafica_comportamiento_historico");
+      href = $('#historia_'+id).attr("href", href);
+      //Mostrar los botones
+      $('#asignar_'+id).fadeIn();
+      $('#historia_'+id).fadeIn();
+    }
+    else
+    {
+      $('#asignar_'+id).fadeOut();
+      $('#historia_'+id).fadeOut();
+    }
+  });
+  //Dialogo con la gráfica de comportamiento
+});
+</script>

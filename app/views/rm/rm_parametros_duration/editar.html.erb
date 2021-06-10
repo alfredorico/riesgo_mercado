@@ -1,0 +1,54 @@
+<% content_for( :titulo ){'Parámetros para el cálculo duration'} %>
+<div class="panel panel-default">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <%= callout("Edición de los parámetros",:danger) %>              
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="well well-sm">
+            <div class="row">
+              <div class="col-md-12">
+                <p class="titulo_parametros_duration">Listado de la cartera de títulos de mercado (RMCI)</p>
+                <span>Para efectuar los calculos de duration por cada titulo presente en la cartera de inversion se requiere definir: Valor de rescate y Frecuencia de pago</span>
+              </div>            
+            </div>
+          </div>
+        </div>
+      </div>    
+
+  	<%= simple_form_for( :rm_inversiones, :url => actualizar_rm_parametros_duration_index_path, :html => {:method => :post}) do |q|%>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th>Codigo Titulo</th>
+                <th>Nombre</th>
+                <th>Valor de Rescate</th>
+                <th>Frecuencia de Pagos</th>
+              </tr>            
+            </thead>
+  		      <tbody>
+              <% @rm_inversiones.each do |inversion| %>
+                <%= q.simple_fields_for "rm_inversiones[]", inversion do |f| %>
+                <tr>
+                  <td><%= inversion.codigo %></td>
+                  <td><%= inversion.nombre %></td>
+                  <td class="editar_parametros_duration"><%= f.input :valor_rescate, :label=> false, :input_html => {:class => 'text_field', :type=>'text', required: true}, :label_html=>{:class =>'label'} %></td>    	
+                  <td class="editar_parametros_duration"><%= f.input :frecuencia_pago, collection: Rm::RmDuration::FRECUENCIAS, :label=> false, :input_html => {:class => 'text_field'}, :label_html=>{:class =>'label'} %></td>    	
+                </tr>
+                <% end %>
+              <% end %>
+  		      </tbody>
+          </table>
+        </div>
+        <div class="text-center">
+      		<%= link_to 'Cancelar', lista_rm_parametros_duration_index_path, class:'btn btn-danger'%>
+      		<button class="btn btn-primary" type="submit">Actualizar</button>
+      	</div>
+      </div>
+    </div>
+  	<% end %>
+  </div>
+</div>

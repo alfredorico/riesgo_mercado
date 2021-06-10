@@ -1,0 +1,88 @@
+<% content_for( :titulo ){'Resultados de la simulación'} %>
+<%= render 'form'  %>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <%= callout("Valores generados",:danger) %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="table-responsive" style="margin-top: 15px">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+            <tr>
+              <th style="text-center">TITULO</th>
+              <th style="text-center">POSICION</th>
+              <th style="text-center">PRECIO MERCADO</th>
+              <th style="text-center">PERCENTIL</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="text-center"><%= @rm_simulacion_montecarlo.informacion_titulo %></td>
+              <td class="text-center"><%= number_with_precision(@rm_simulacion_montecarlo.simulador.posicion, delimiter: '.', separator: ',', precision: 4) %> </td>
+              <td class="text-center"><%= number_with_precision(@rm_simulacion_montecarlo.simulador.precio_mercado * 100, delimiter: '.', separator: ',', precision: 4) %>%</td>
+              <td class="text-center"><%= @rm_simulacion_montecarlo.simulador.precio_simulado.round(8) %></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>      
+      </div>
+      <div class="col-md-6">
+        <div class="var_montecarlo_mercado">
+          <p class="titulo">VaR Simulado</p>
+          <p><strong><%= number_with_precision( @rm_simulacion_montecarlo.simulador.var, delimiter: '.', separator: ',', precision: 4)  %></strong></p>
+        </div>
+      </div>
+    </div> 
+  
+    <%= callout("Histograma de precios simulados para #{@rm_simulacion_montecarlo.numero_corridas} corridas ",:danger) %>
+      
+    <div align="row">
+      <div class="col-md-8 col-md-offset-2"> 
+         <div class="panel panel-default">
+            <div class="panel-body">  
+              <%= high_chart('chart1',@rm_simulacion_montecarlo.simulador.grafica_histograma_precios_aleatorios) %>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="text-center">
+        <%= link_to descargar_valores_aleatorios_rm_simulacion_montecarlo_index_path(token: @rm_simulacion_montecarlo.simulador.parte_aleatoria_nombre_archivo), class: 'btn btn-warning' do %>    
+        <i class="fa fa-download" aria-hidden="true"></i> Descargar valores aleatorios generados
+        <% end %>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-12">  
+        <%= callout("Listado de precios mercado a utilizar",:danger) %>        
+      </div>
+    </div>
+        
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">  
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th class="text-center">MUESTRA</th>
+                <th class="text-center">FECHA DE ESTUDIO</th>
+                <th class="text-center">PRECIO</th>
+                <th class="text-center">RENDIMIENTO</th>
+              </tr>
+            </thead>
+            <tbody class="centrado">
+              <% @rm_simulacion_montecarlo.serie_fecha_precios_mercado_rendimientos.each_with_index do |s,i| %>
+                <tr>
+                  <td><%= i+1 %></td>
+                  <td><%= s['fecha_snapshot'].strftime("%d / %m / %Y") %></td>
+                  <td><%= s['precio'] %></td>              
+                  <td><%= s['rendimiento'] %></td>              
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>      
+    </div>
+  </div>    
+</div>    
+  

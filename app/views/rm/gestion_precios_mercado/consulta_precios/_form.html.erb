@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-5">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><strong>Parámetros de la consulta</strong></div>
+      <div class="panel-body">
+        <%= simple_form_for(@consulta_precios) do |f| %>
+          <div class="row">
+            <div class="col-md-10">
+              <%= f.input :tipo_consulta_precios,  label: 'Tipo de consulta:', collection: Rm::GestionPreciosMercado::ConsultaPrecios::TIPO_CONSULTA_PRECIOS_MERCADO.map {|k,v| [v,k]}, as: :radio_buttons %>
+            </div>
+          </div>
+          <div id="consulta_titulo_precios_mercado_fecha_especifica">            
+            <p class="alert alert-info">
+              Se consultará los precios de todos los títulos a la fecha especificada
+            </p>
+            <div class="row"  >
+              <div class="col-md-5">
+                <%= campo_fecha(f, :fecha_snapshot, 'Fecha especifica:', 'Fecha específica de consulta de títulos') %>
+              </div>
+            </div> 
+          </div>                             
+          <div  id="consulta_titulo_precios_mercado_rango_de_fechas">
+            <p class="alert alert-warning">
+              Se consultará la história de un título en específico para un rango de fechas
+            </p>
+            <div class="row">
+              <div class="col-md-6">
+                <%= campo_fecha(f, :fecha_desde, 'Fecha inicial de consulta:', 'Fecha incial de la carga') %>
+              </div>
+              <div class="col-md-6">
+                <%= campo_fecha(f, :fecha_hasta, 'Fecha final de consulta:', 'Fecha final de la carga') %>
+              </div>              
+            </div>    
+              <div class="row">
+                <div class="col-md-8">          
+                  <%= f.input :codigo_titulo, label: "Código del Título en PRECIOS MERCADO", collection: Rm::GestionPreciosMercado::ConsultaPrecios.codigos_titulos, include_blank: "SELECCIONE" %>
+                </div>
+              </div>
+          </div>  
+          <div class="row">
+            <div class="col-md-6">
+              <%= button_tag(type: 'submit', class: "btn btn-primary") do %>
+                <i class="fa fa-search"></i> Consultar
+              <% end %>              
+            </div>
+            <% if can? :new, RmPrecioMercado %>
+              <div class="col-md-6 text-right">
+                <%= link_to new_gestion_precios_mercado_rm_precio_mercado_path, class: 'btn btn-warning' do %>
+                <i class="fa fa-arrow-right"></i> Nuevo precio mercado
+                <% end %>               
+              </div>
+            <% end %>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

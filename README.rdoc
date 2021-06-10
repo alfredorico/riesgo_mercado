@@ -1,0 +1,3 @@
+Rails engine para cálculo de riesgo de mercado financiero
+
+Intencionalmente no hay commits en este repositorio. EL objetivo es mostrar mi portfolio de desarrollo de aplicaciones. 

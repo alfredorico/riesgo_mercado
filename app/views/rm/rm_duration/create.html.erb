@@ -1,0 +1,64 @@
+<% content_for( :titulo ){'Resultados del Calculo Duration'} %>
+<%= render 'form' %>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <%= callout("Resultados del cálculo para los títulos en RMCI",:danger) %>
+      
+    <div align="row">
+      <div class="col-md-8 col-md-offset-2"> 
+        <% if @rm_duration.durations.size == 0 %>
+          <div class="alert alert-danger">
+            No hay datos de precios mercado para la fecha seleccionada
+          </div>
+        <% else %>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered table-data-calculos">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Posicion</th>
+                  <th>Rendimiento Efectivo</th>
+                  <th>Duration</th>
+                  <th>Duration Modificada</th>
+                </tr>   
+              </thead>
+              <tbody>
+                <% @rm_duration.durations.each do |item|%>
+                <tr>
+                  <td class="texto_centrado"><%=item["codigo"]%></td>
+                  <td class="texto_derecha"><%=item["posicion"]%></td>
+                  <td class="texto_derecha"><%= item["rendimiento_efectivo"]%><%#=number_with_precision(item["rendimiento_efectivo"].to_f.round(2), :delimiter => ".", :separator => ",")%></td>
+                  <td class="texto_derecha"><%= item["duration"]%><%#=number_with_precision(item["duration"].to_f.round(2), :delimiter => ".", :separator => ",")%></td>
+                  <td class="texto_derecha"><%=item["duration_modificada"]%></td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered table-data-calculos-transpuesta">
+                  <tr> 
+                    <th>TOTAL CARTERA</th>
+                    <td><%= @rm_duration.total_posicion_cartera%></td>
+                  </tr>  
+                  <tr>
+                    <th>DURATION PORTAFOLIO</th>
+                    <td><%= @rm_duration.duration_portafolio%></td>
+                  </tr>
+                  <tr>
+                    <th>DURATION MODIFICADA PORTAFOLIO</th>
+                    <td><%= @rm_duration.duration_modificada_portafolio%></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        <% end %>         
+      </div>
+    </div>
+  </div>
+</div>    
+              

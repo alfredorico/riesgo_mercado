@@ -1,0 +1,53 @@
+<% content_for( :titulo ){'Parámetros para el cálculo duration'} %>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <%= callout("Parametros para el calculo de Duration",:danger) %>        
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="well well-sm">
+          <div class="row">
+            <div class="col-md-8">
+              <p class="titulo_parametros_duration">Listado de la cartera de títulos de mercado (RMCI)</p>
+              <span>Los valores para edición de los títulos son el <strong>VALOR RESCATE</strong> y <strong>FRECUENCIA DE PAGO</strong></span>
+            </div>
+            <% if can? :editar, :rm_parametros_duration %>
+              <div class="col-md-4 text-right" style="padding-top: 5px">
+                <%= link_to editar_rm_parametros_duration_index_path, class: 'btn btn-info' do %> 
+                <i class="fa fa-edit"></i> Editar parámetros
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th>CODIGO TITULO</th>
+                <th>NOMBRE</th>
+                <th>VALOR NOMINAL</th>
+                <th>VALOR DE RESCATE</th>
+                <th>FRECUENCIA DE PAGO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @rm_inversiones.each do |inversion| %>
+              <tr>
+                <td><%= inversion.codigo %></td>
+                <td><%= inversion.nombre %></td>
+                <td class="texto_derecha"><%= inversion.valor_nominal %></td>
+                <td class="texto_derecha"><%= inversion.valor_rescate %></td>
+                <td class="texto_centrado"><%= Rm::RmDuration::FRECUENCIAS.map{|x| x.first if x.include?(inversion.frecuencia_pago)}.compact.first %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+	</div>
+</div>

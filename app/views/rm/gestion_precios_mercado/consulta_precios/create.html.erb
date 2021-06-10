@@ -1,0 +1,57 @@
+<% content_for( :titulo ){'Resultados de la consulta de precios mercado'} %>
+<%= render 'form' %>
+<div class="panel panel-default">
+  <div class="panel-body">
+      <%= callout("Títulos en PRECIOS MERCADO", :warning) %>
+      <div class="table-responsive">
+        <table id="resultado_consulta_precios_mercado" class="datatable-calculos">
+          <thead>
+            <tr>
+              <th class="text-center">FECHA_SNAPSHOT</th>
+              <th class="text-center">CODIGO_TITULO</th>
+              <th class="text-center">NOMBRE</th>
+              <th class="text-center">FECHA_VENCIMIENTO</th>
+              <th class="text-right">MONTO</th>
+              <th class="text-right">PRECIO_COMPRA</th>
+              <th class="text-right">TASA_CUPON</th>
+              <th class="text-right">PRECIO_MERCADO</th>
+              <% if can? :edit, RmPrecioMercado or can? :destroy, RmPrecioMercado   %>                
+                <th class="text-right">OPERACIONES</th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody class="centrado">
+            <% @consulta_precios.titulos_consultados.each do |titulo| %>
+            <tr>
+              <td><%= Date.parse(titulo['fecha_snapshot']).strftime('%d/%m/%Y') %></td>
+              <td><%= titulo['codigo_titulo'] %></td>
+              <td><%= titulo['nombre'] %></td>
+              <td class="text-center"><%= Date.parse(titulo['fecha_vencimiento']).strftime('%d/%m/%Y') %></td>
+              <td class="text-right"><%= titulo['monto'] %></td>
+              <td class="text-right"><%= titulo['precio_compra'] %></td>
+              <td class="text-right"><%= titulo['tasa_cupon'] %></td>
+              <td class="text-right precio_mercado"><%= titulo['precio_mercado'] %></td>
+              <% if can? :edit, RmPrecioMercado or can? :destroy, RmPrecioMercado  %>
+                <td class="text-center">
+                  <% if can? :edit, RmPrecioMercado %>
+                    <%= link_to edit_gestion_precios_mercado_rm_precio_mercado_path(titulo['id']) do %>
+                    <i class="fa fa-edit" title="Editar datos"></i>
+                    <% end %>
+                  <% end %>
+                  <% if can? :destroy, RmPrecioMercado %>
+                    <%= link_to gestion_precios_mercado_rm_precio_mercado_path(titulo['id']), method: :delete, data: { confirm: 'Are you sure?' }, style: 'color: red' do %>
+                    <i class="fa fa-trash" title="Borrar precio"></i>
+                    <% end %>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+            <% end %>            
+          </tbody>
+        </table>
+      </div>
+      <br>
+      <%= render 'eliminar_titulos_consultados' if  @consulta_precios.titulos_consultados.any? %>
+      
+  </div>
+</div>

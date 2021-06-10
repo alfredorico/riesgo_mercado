@@ -1,0 +1,28 @@
+<% if error_de_carga %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-danger">
+      <div class="panel-heading"><strong>Resultados de la carga</strong></div>
+      <div class="panel-body">
+        <br>
+        <div class="row">
+          <div class="col-md-12" style="font-size: 1.2em">
+            <p>La carga no pudo ser efectuada por el siguiente error:</p>
+            <div class="alert alert-danger text-center">
+              <p><strong>Error:</strong> <%= error_de_carga %> </p>
+            </div>            
+            <strong><p class="text-center">Por favor notificar al área de soporte Riskguard sobre el mismo.</p></strong>
+            
+          </div>
+        </div>
+        <br>
+        <div class="text-center">
+          <%= link_to new_gestion_precios_mercado_consulta_precios_path, class: 'btn btn-warning' do %>
+          <i class="fa fa-search"></i> Consultar precios mercado
+          <% end %>  
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>  

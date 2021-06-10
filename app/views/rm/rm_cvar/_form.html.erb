@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-md-5">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><strong>Parámetros de cálculo</strong></div>
+      <div class="panel-body">
+        <%= simple_form_for(@rm_cvar) do |f| %>
+          <div class="row">
+            <div class="col-md-6">
+              <%= campo_fecha(f, :fecha_de_estudio, 'Fecha de estudio:', 'Fecha seleccionada para calcular el C-VaR') %>
+              <%= f.input :tipo_cartera, :label => "Tipo de Cartera", :collection => Rm::RmAnalisisPortafolio::TipoCartera.listar_tipos, :include_blank => false %>
+              <%= f.input :rm_inversion_codigo, :label => "Titulo", :collection => Rm::RmAnalisisPortafolio::TipoCartera.titulos(@rm_cvar.tipo_cartera), :include_blank => "PORTAFOLIO" %>
+              <%= image_tag "rm/spinner.gif", :id => "titulos_spinner" ,:style => "display: none"%>
+            </div>
+          </div>        
+          <%= f.input :intervalo_de_confianza, :label => "Intervalo de Confianza", input_html: { style: ancho_input_px(60)} %>
+          <%= f.input :numero_de_muestras_temporal, :label => "Número de muestras", input_html: { style: ancho_input_px(60)} %>
+          <%= f.input :porcentaje_inicial_serie, :label => "Porcentaje inicial de la serie", input_html: { style: ancho_input_px(60)} %>
+          <%= f.input :porcentaje_incremento_serie, :label => "Porcentaje de incremento de la serie", input_html: { style: ancho_input_px(60)} %>
+          <button id="boton_generar_analisis_portafolio" class="btn btn-primary" type="submit">Generar</button>
+          <% if can? :new, Rm::RmAntecedenteTitulo %>
+            <%= link_to new_rm_antecedente_titulo_path, class: 'btn btn-warning' do %>
+            <i class="fa fa-history"></i> Asignar antecedentes a títulos
+            <% end %>            
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    //TODO: Falta exportar a Excel
+    $(".boton_generar_excel").click(function(){
+        $("form").attr("action", '<%= rm_cvar_index_path(:format => 'xlsx') %>');
+        $("form").submit();
+        $("form").attr("action",'<%= rm_cvar_index_path %>'); // Debido a que no se refresca la página.
+    });
+
+    //Es preferible dejar este JavaScript aqui
+    $("#rm_cvar_tipo_cartera").on('change',function(){    
+      $("#rm_cvar_rm_inversion_codigo").hide();
+      $('#titulos_spinner').show();  
+       $('#boton_generar_analisis_portafolio').attr('disabled','disabled');    
+       $('.boton_generar_excel').attr('disabled','disabled');    
+      $.get("<%= listar_titulos_rm_cvar_index_path %>"+"?tipo_cartera="+this.value);
+    });
+
+</script>

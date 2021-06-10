@@ -1,0 +1,25 @@
+<div id="box" class="ancho_95pr">
+  <div class="block">
+    <h2>SIMULACION DE MONTECARLO</h2>
+    <div class="content">
+      <%= render 'parametros' %>
+    </div>
+  </div>
+  <div class="content">
+    <h3>Histograma de precios mercado / <%= @rm_simulacion_montecarlo.informacion_titulo %> </h3>
+    <br/><br/>
+    <div align="center">
+      <div class="overflow_x">
+        <%= high_chart('chart1',@rm_simulacion_montecarlo.histogramas.grafica_histograma_precios) %>
+      </div>
+    </div>
+    <br/><br/><br/>
+    <h3>Histograma de rendimientos (LogN) / <%= @rm_simulacion_montecarlo.informacion_titulo %> </h3>
+    <br/><br/>
+    <div align="center">
+      <div class="overflow_x">
+        <%= high_chart('chart2',@rm_simulacion_montecarlo.histogramas.grafica_histograma_precios_ln) %>
+      </div>
+    </div>
+  </div>
+</div>

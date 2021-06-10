@@ -1,0 +1,24 @@
+<div class="table-responsive" style="margin-top: 15px">
+  <table class="table table-hover table-bordered table-data-calculos">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Posicion</th>
+        <th>Rendimiento Efectivo</th>
+        <th>Duration</th>
+        <th>Duration Modificada</th>
+      </tr>   
+    </thead>
+    <tbody>
+      <% vector.each do |item|%>
+      <tr>
+        <td class="texto_centrado"><%=item["codigo"]%></td>
+        <td class="texto_derecha"><%=item["posicion"]%></td>
+        <td class="texto_derecha"><%= item["rendimiento_efectivo"]%><%#=number_with_precision(item["rendimiento_efectivo"].to_f.round(2), :delimiter => ".", :separator => ",")%></td>
+        <td class="texto_derecha"><%= item["duration"]%><%#=number_with_precision(item["duration"].to_f.round(2), :delimiter => ".", :separator => ",")%></td>
+        <td class="texto_derecha"><%=item["duration_modificada"]%></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

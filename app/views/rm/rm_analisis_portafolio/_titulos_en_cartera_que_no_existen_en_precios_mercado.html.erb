@@ -1,0 +1,12 @@
+<% if titulos_en_cartera_que_no_existen_en_precios_mercado.present? %>
+  <div class="alert alert-danger advertencia_portafolio">
+    <p class="titulo">ADVERTENCIA</p>
+    <p>
+      Los siguientes títulos de la cartera indicada no poseen ningún registro en RM_PRECIOS_MERCADO.
+      Para tener un VaR de portafolio acertado debe existir información registrada en RM_PRECIOS_MERCADO
+    </p>
+    <p class="codigo_titulo">
+      <%= titulos_en_cartera_que_no_existen_en_precios_mercado.join(' / ') %>
+    </p>
+  </div>
+<% end %>

@@ -1,0 +1,122 @@
+<% content_for( :titulo ){'Valor en Riesgo Portafolio de Inversiones al Vencimiento'} %>
+<%= render 'form'  %>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <% if  @rm_analisis_portafolio.rm_inversion_codigo.blank? %>
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <%= render partial: 'titulos_en_cartera_que_no_existen_en_precios_mercado', locals: {titulos_en_cartera_que_no_existen_en_precios_mercado: @rm_analisis_portafolio.titulos_en_cartera_que_no_existen_en_precios_mercado} %>
+        </div>
+      </div>
+    <% end %>
+    <%= callout("Precios mercado #{@rm_analisis_portafolio.rm_inversion_codigo}", :danger) %>
+    <%= high_stock("grafico_posiciones",Rm::RmAnalisisPortafolio::GraficasVar.lineas(@rm_analisis_portafolio.serie_precios_mercado_y_variaciones, 'precio', 'Precio mercado', '#CF142B') ) %>
+    <%= callout("Variaciones",:danger) %>
+    <%= high_stock("grafico_posiciones2",Rm::RmAnalisisPortafolio::GraficasVar.lineas(@rm_analisis_portafolio.serie_precios_mercado_y_variaciones, 'variacion', 'Variaciones de precios', '#FF8000') ) %>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="table-responsive">
+          <%= callout("Resultados",:danger) %>
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th class="text-center">FECHA DE ESTUDIO</th>
+                <th class="text-center">PRECIO MERCADO</th>
+                <th class="text-center">POSICION</th>
+                <th class="text-center">VOLATILIDAD</th>
+                <th class="text-center">VAR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="text-align: center"><%= @rm_analisis_portafolio.fecha_de_estudio.to_date.strftime("%d / %m / %Y")%></td>
+                <td style="text-align: center"><%= @rm_analisis_portafolio.precio_mercado %></td>
+                <td style="text-align: center"><%= number_with_precision(@rm_analisis_portafolio.calculo_var.pivote.to_f, delimiter: ".", separator: ",", precision: 4) %></td>
+                <td style="text-align: center"><%= (@rm_analisis_portafolio.calculo_var.volatilidad.to_f * 100.0).round(6) %> %</td>
+                <td style="text-align: center"><strong><%= number_with_precision( @rm_analisis_portafolio.calculo_var.var, delimiter: ".", separator: ",", precision: 6)%></strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-12">
+        <%= callout("Serie de precios mercado y variaciones",:info) %>
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th>MUESTRA</th>
+                <th>FECHA</th>
+                <th>PRECIO</th>
+                <th>VARIACION</th>
+                <th>VARIACION ABSOLUTA</th>
+                <th>RENDIMIENTOS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @rm_analisis_portafolio.serie_precios_mercado_y_variaciones.each_with_index do |s,i| %>
+                <tr>
+                  <td class="text-center"><%= i+1 %></td>
+                  <td class="text-center"><%= Date.parse(s["fecha_snapshot"]).strftime("%d / %m / %Y") %></td>
+                  <td class="text-center"><%= number_with_precision(s["precio"] , :delimiter => ".", :separator => ",", :precision => 4)%> %</td>
+                  <td class="text-right"><%= (s["variacion"].to_f) %></td>
+                  <td class="text-right"><%= number_with_precision(s["variacion_absoluta"] , :delimiter => ".", :separator => ",", :precision => 4) %></td>
+                  <td class="text-right"><%= number_with_precision(s["rendimiento"] , :delimiter => ".", :separator => ",", :precision => 4) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-12">
+        <%= callout("Información transaccional de la cartera",:info) %>
+        <div class="table-responsive caja_altura_fija_con_scroll">
+          <table class="table table-hover table-bordered table-data-calculos">
+            <thead>
+              <tr>
+                <th>MUESTRA</th>
+                <th>FECHA</th>
+                <th>VALOR_NOMINAL</th>
+                <th>POSICION</th>
+                <th>PRECIO</th>
+                <th>VALOR SEGUN MERCADO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @rm_analisis_portafolio.serie_acotada.each do |s| %>
+                <tr>
+                  <td class="text-right"><%= s["muestra"]   %></td>
+                  <td class="text-right"><%= Date.parse(s["fecha_snapshot"]).strftime("%d / %m / %Y") %></td>
+                  <td class="text-right"><%= number_with_precision(s["valor_nominal"] , :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                  <td class="text-right"><%= number_with_precision(s["posicion"] , :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                  <td class="text-right"><%= number_with_precision(s["precio"] , :delimiter => ".", :separator => ",", :precision => 4)%> %</td>
+                  <td class="text-right"><%= number_with_precision(s["valor_segun_mercado"] , :delimiter => ".", :separator => ",", :precision => 4)%></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

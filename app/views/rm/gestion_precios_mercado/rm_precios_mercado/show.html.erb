@@ -1,0 +1,58 @@
+<% content_for( :titulo ){'Resultados de la consulta de precios mercado'} %>
+<div class="panel panel-default">
+  <div class="panel-body">
+      <%= callout("Detalles del título #{@rm_precio_mercado.codigo_titulo}", :danger) %>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <div class="table-responsive">
+            <div class="text-left">              
+              <%= link_to new_gestion_precios_mercado_consulta_precios_path, class: 'btn btn-warning' do %>
+              <i class="fa fa-search"></i> Nueva Consulta
+              <% end %>                
+            </div>
+            <br>
+            <table class='table table-hover table-bordered table-data-calculos'>
+              <thead>
+                <tr>
+                  <th class="text-center">FECHA_SNAPSHOT</th>
+                  <th class="text-center">CODIGO_TITULO</th>
+                  <th class="text-center">NOMBRE</th>
+                  <th class="text-center">FECHA_VENCIMIENTO</th>
+                  <th class="text-right">MONTO</th>
+                  <th class="text-right">PRECIO_COMPRA</th>
+                  <th class="text-right">TASA_CUPON</th>
+                  <th class="text-right">PRECIO_MERCADO</th>
+                </tr>
+              </thead>
+              <tbody class="centrado">
+                <tr>
+                  <td><%= @rm_precio_mercado.fecha_snapshot %></td>
+                  <td><%= @rm_precio_mercado.codigo_titulo %></td>
+                  <td><%= @rm_precio_mercado.nombre %></td>
+                  <td class="text-center"><%= @rm_precio_mercado.fecha_vencimiento %></td>
+                  <td class="text-right"><%= @rm_precio_mercado.monto %></td>
+                  <td class="text-right"><%= @rm_precio_mercado.precio_compra %></td>
+                  <td class="text-right"><%= @rm_precio_mercado.tasa_cupon %></td>
+                  <td class="text-right precio_mercado"><strong><%= @rm_precio_mercado.precio_mercado %></strong></td>
+                
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-right">
+              <% if can? :edit, RmPrecioMercado %>
+                <%= link_to edit_gestion_precios_mercado_rm_precio_mercado_path(@rm_precio_mercado), class: 'btn btn-info' do %>
+                <i class="fa fa-edit" title="Editar datos"></i> Editar
+                <% end %>
+              <% end %>
+              <% if can? :destroy, RmPrecioMercado %>
+                <%= link_to gestion_precios_mercado_rm_precio_mercado_path(@rm_precio_mercado), class: 'btn btn-danger', method: :delete, data: { confirm: '¿Está seguro que desea eliminar el registro?' } do %>
+                <i class="fa fa-trash" title="Borrar precio"></i> Eliminar
+                <% end %>            
+              <% end %>
+                
+            </div>
+          </div>          
+        </div>
+      </div>      
+  </div>
+</div>

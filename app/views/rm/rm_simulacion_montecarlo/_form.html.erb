@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="col-md-5">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><strong>Parámetros de cálculo</strong></div>
+      <div class="panel-body">
+        <%= simple_form_for(@rm_simulacion_montecarlo, :html => {:class => 'form'}) do |f| %>
+            <fieldset>
+            <legend class="naranja">Parámetros básicos</legend>
+              <div class="row">
+                <div class="col-md-6">
+                  <%= campo_fecha(f, :fecha_de_estudio, 'Fecha de estudio:', 'Fecha seleccionada para efectuar los calculos de volatilidades') %>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <%= f.input :tipo_cartera, label: "Tipo de cartera", collection: Rm::RmAnalisisPortafolio::TipoCartera.listar_tipos, include_blank: false %>
+                </div>
+              </div>      
+              <div class="row">
+                <div class="col-md-6">
+                  <%= f.input :rm_inversion_codigo, :label => "Titulo", :collection => Rm::RmAnalisisPortafolio::TipoCartera.titulos(@rm_simulacion_montecarlo.tipo_cartera), :include_blank => "PORTAFOLIO" %>
+                  <%= image_tag "rm/spinner.gif", :id => "titulos_spinner" ,:style => "display: none"%>
+                </div>
+              </div>
+              <%= f.input :n_dias, label: 'Cantidad de precios (días) para el cálculo', input_html: { style: ancho_input_px(60)}%>
+              <div class="row">
+                <div class="col-md-6">              
+                  <%= f.input :cantidad_clases, label: 'Número de clases para el histograma', collection: Rm::RmSimulacionMontecarlo::HistogramasPreciosMercado::NUMERO_CLASES, :include_blank => false %>
+                </div>
+              </div>                  
+            </fieldset>
+            <fieldset>
+              <legend class="azul">Funcionalidad</legend>  
+              <%= f.input :funcionalidad, label: 'Seleccione', as: :radio_buttons, collection: Rm::RmSimulacionMontecarlo::FUNCIONALIDAD %>
+            </fieldset>
+            <div id="caja_simulador">
+              <fieldset>
+                <legend class="rojo">Parámetros para la simulación de montecarlo</legend> 
+                <%= f.input :var_a_n_dias, :label => 'Estimar VaR de N días', input_html: { style: ancho_input_px(60)} %>
+                <%= f.input :numero_corridas, :label => 'Número de corridas:', input_html: { style: ancho_input_px(60)} %>
+                <div class="row">
+                  <div class="col-md-6">
+                    <%= f.input :metodo_de_calculo, :label => 'Método de Cálculo:', collection: Rm::RmSimulacionMontecarlo::Simulador::METODO_DE_CALCULO, include_blank: false %>
+                  </div>
+                </div>   
+                <%= f.input :percentil, :label => 'Percentil:', input_html: { style: ancho_input_px(60)} %>
+                <%= render partial: 'parametros_distribucion', locals: {f: f} %> 
+              </fieldset>
+            </div>
+            <%= button_tag(type: 'submit', class: "btn btn-danger", id: "montecarlo_iniciar_proceso") do %>
+              <i class="fa fa-cog"></i> Iniciar Proceso
+            <% end %>            
+        <% end %>        
+      </div>
+    </div>
+  </div>
+</div>          
+  
+<script type="text/javascript">
+  //Es preferible dejar este JavaScript aquí
+  //TODO: Refactorizar todo este jQuery por algo mejor
+  $("#rm_simulacion_montecarlo_tipo_cartera").on('change',function(){    
+    $("#rm_simulacion_montecarlo_rm_inversion_codigo").hide();
+    $('#titulos_spinner').show();  
+    $('#montecarlo_iniciar_proceso').attr('disabled','disabled');    
+    $.get("<%= listar_titulos_rm_simulacion_montecarlo_index_path %>"+"?tipo_cartera="+this.value);
+  });
+  
+  $(document).ready(function () {
+    //$("input[name='rm_simulacion_montecarlo[funcionalidad]']").prop( "checked", false );
+  //
+    $("input[name='rm_simulacion_montecarlo[funcionalidad]']").on('click',function(){
+      if ($(this).val() == "0") //HISTOGRAMA
+      {
+        $("#caja_simulador").hide();        
+      } else
+      if ($(this).val() == "1") //SIMULADOR
+      {
+        $("#caja_histograma").hide();
+        $("#caja_simulador").fadeIn('slow');
+      }    
+    });
+    $("input[name='rm_simulacion_montecarlo[funcionalidad]']:checked").click();
+    
+  });  
+</script>

@@ -1,0 +1,18 @@
+<% if can? :eliminar_titulos_consultados,  Rm::GestionPreciosMercado::ConsultaPrecios %>
+  <%= callout("Eliminación en PRECIOS MERCADO", :danger) %>
+  <%= form_for(@consulta_precios, url: eliminar_titulos_consultados_gestion_precios_mercado_consulta_precios_index_path, method: :delete) do |f| %>
+    <% @consulta_precios.titulos_consultados.each do |titulo| %>
+      <%= hidden_field_tag 'rm_precios_mercado_ids[]',  titulo.id %>
+    <% end %>  
+    <div class="row">
+      <div class="col-md-6">
+        <div class="alert alert-danger text-center">
+            Los resultados generados de la consuluta efectuada pueden ser eliminados: &nbsp;&nbsp;
+            <%= button_tag(type: 'submit', class: "btn btn-danger", data: { confirm: "¿Está seguro que desea eliminar los precios consultados?" }) do %>
+              <i class="fa fa-trash"></i> Eliminar
+            <% end %>
+        </div>
+      </div>  
+    </div>
+  <% end %>
+<% end %>
